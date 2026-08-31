@@ -1,52 +1,55 @@
-# Mock AI Response Contract as defined in LLD.md §6.4
-
-MOCK_MENTOR_CHAT_RESPONSE = {
-    "reply": "JPA is an ORM that maps Java objects to relational tables. SQL knowledge ensures you understand what JPA generates under the hood, helping you write efficient queries and debug N+1 problems.",
-    "citations": [
-        {"source": "Database Fundamentals", "course_id": "c1"}
-    ],
-    "roadmap_mutation": {"triggered": False},
-}
-
-MOCK_MENTOR_ADAPTATION_RESPONSE = {
-    "reply": (
-        "Based on your feedback that Spring Boot felt too theoretical, "
-        "I've added two hands-on project nodes after the quiz. "
-        "You'll build a small REST API from scratch before moving on. "
-        "I also noticed your last assessment score was 62% — you're on track, "
-        "but a quick review of Dependency Injection concepts might help."
-    ),
-    "citations": [
-        {"source": "Spring Boot Docs", "url": "https://docs.spring.io/spring-boot/docs/current/reference/html/"}
-    ],
-    "roadmap_mutation": {
-        "triggered": True,
-        "mutation_type": "REMEDIAL_SPLICE",
-        "spliced_nodes": [
-            {"node_id": "n_r1", "title": "Build a TODO REST API (Project)", "type": "PROJECT"},
-            {"node_id": "n_r2", "title": "Dependency Injection Deep Dive", "type": "COURSE"},
-        ],
-    },
-}
+import uuid
+from sqlalchemy import desc, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from models.chat_history import ChatHistory
+from ai.mentor.mentor_chat import get_mentor_chat_reply, adapt_roadmap_from_feedback
 
 
-async def get_mentor_response(user_id: str, query: str, current_node_id: str | None = None) -> dict:
+async def get_mentor_response(
+    user_id: str | uuid.UUID,
+    query: str,
+    current_node_id: str | None = None,
+    db: AsyncSession | None = None,
+) -> dict:
     """
-    RAG AI tutor answer grounded in course metadata and prerequisite rules.
-    TODO: Replace with actual RAG streaming / retrieval pipeline.
+    RAG AI tutor answer grounded in active node context and persistent database chat history.
     """
-    return dict(MOCK_MENTOR_CHAT_RESPONSE)
+    chat_history_records = []
+
+    if db and user_id:
+        try:
+            uid = uuid.UUID(str(user_id)) if isinstance(user_id, str) else user_id
+            result = await db.execute(
+                select(ChatHistory)
+                .where(ChatHistory.user_id == uid)
+                .order_by(desc(ChatHistory.timestamp))
+                .limit(10)
+            )
+            records = result.scalars().all()
+            chat_history_records = list(reversed(records))
+        except Exception as e:
+            print(f"[Mentor Service] DB chat history load warning: {e}")
+
+    return await get_mentor_chat_reply(
+        user_id=str(user_id),
+        query=query,
+        chat_history=chat_history_records,
+        current_node_context=current_node_id,
+    )
 
 
-async def process_feedback_and_adapt(user_id: str, feedback_id: str | None = None, difficulty: str = "JUST_RIGHT") -> dict:
+async def process_feedback_and_adapt(
+    user_id: str | uuid.UUID,
+    feedback_id: str | None = None,
+    difficulty: str = "JUST_RIGHT",
+    feedback_text: str = "",
+    db: AsyncSession | None = None,
+) -> dict:
     """
     Processes user feedback difficulty signals and triggers roadmap adaptation if needed.
-    TODO: Replace with dynamic DAG mutation logic.
     """
-    if difficulty in ["TOO_HARD", "TOO_EASY"]:
-        return dict(MOCK_MENTOR_ADAPTATION_RESPONSE)
-    return {
-        "reply": "Thank you for the feedback! Your roadmap is progressing smoothly.",
-        "citations": [],
-        "roadmap_mutation": {"triggered": False},
-    }
+    return await adapt_roadmap_from_feedback(
+        user_id=str(user_id),
+        feedback_text=feedback_text,
+        difficulty=difficulty,
+    )

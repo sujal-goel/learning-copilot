@@ -7,6 +7,11 @@ class RegisterRequest(BaseModel):
     name: str
     email: EmailStr
     password: str
+    goal: str | None = None
+    experience_level: str | None = None
+    study_hours_per_week: int | None = None
+    timeline_months: int | None = None
+    current_skills: list[str] = []
 
 
 class LoginRequest(BaseModel):
@@ -28,3 +33,9 @@ class UserResponse(BaseModel):
     email: str
     avatar_url: str | None = None
     created_at: datetime
+
+
+class RegisterResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse

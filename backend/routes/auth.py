@@ -6,13 +6,14 @@ from auth.google_oauth import get_google_auth_url, verify_google_code
 from auth.jwt import create_access_token, create_refresh_token, decode_token
 from auth.password import hash_password, verify_password
 from database.session import get_db
+from models.profile import ExperienceLevel, LearnerProfile
 from models.user import User
-from schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UserResponse
+from schemas.auth import LoginRequest, RegisterRequest, RegisterResponse, TokenResponse, UserResponse
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED)
 async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == req.email))
     if result.scalar_one_or_none():
@@ -27,9 +28,27 @@ async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
         password_hash=hash_password(req.password),
     )
     db.add(new_user)
+    await db.flush()
+
+    try:
+        exp_level = ExperienceLevel(req.experience_level or "BEGINNER")
+    except ValueError:
+        exp_level = ExperienceLevel.BEGINNER
+
+    profile = LearnerProfile(
+        user_id=new_user.id,
+        goal=req.goal or "Backend Developer",
+        experience_level=exp_level,
+        study_hours_per_week=req.study_hours_per_week or 10,
+        timeline_months=req.timeline_months or 6,
+    )
+    db.add(profile)
+
     await db.commit()
     await db.refresh(new_user)
-    return new_user
+
+    access_token = create_access_token(new_user.id)
+    return RegisterResponse(access_token=access_token, user=new_user)
 
 
 @router.post("/login", response_model=TokenResponse)

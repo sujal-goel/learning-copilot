@@ -41,6 +41,7 @@ async def chat_with_mentor(
         user_id=str(current_user.id),
         query=req.query,
         current_node_id=req.current_node_id,
+        db=db,
     )
 
     # 3. Save Assistant Message

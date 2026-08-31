@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.services.course_service import get_courses_for_skill
+from services.course_service import get_courses_for_skill
 
 router = APIRouter(
     prefix="/courses",

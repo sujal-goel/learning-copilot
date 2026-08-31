@@ -28,7 +28,7 @@ async def create_roadmap(
     profile_id = str(profile.id) if profile else str(uuid.uuid4())
     goal = profile.goal if profile else "Developer"
 
-    roadmap_data = await generate_roadmap(profile_id=profile_id, goal=goal)
+    roadmap_data = await generate_roadmap(profile_id=profile_id, goal=goal, db=db)
     return roadmap_data
 
 
