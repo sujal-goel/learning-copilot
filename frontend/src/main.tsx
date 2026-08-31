@@ -40,7 +40,7 @@ function Setup({ go, refresh }: { go: (p: Page) => void; refresh: () => void }) 
     }
 
     const currentSkills = String(
-      f.get('currentSkills') || ''
+      f.get('skills') || ''
     )
       .split(',')
       .map(s => s.trim())
@@ -66,8 +66,12 @@ function Setup({ go, refresh }: { go: (p: Page) => void; refresh: () => void }) 
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            user_input: `I want to become a ${profile.goal}. My current level is ${profile.level}. I can study ${profile.hours} daily. My target timeline is ${profile.timeline}.`,
-            currentSkills
+            goal: profile.goal,
+            level: profile.level,
+            hours: profile.hours,
+            timeline: profile.timeline,
+            interests: profile.interests,
+            currentSkills: currentSkills
           })
         }
       );

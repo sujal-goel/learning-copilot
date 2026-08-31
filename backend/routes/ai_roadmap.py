@@ -6,22 +6,31 @@ router = APIRouter(prefix="/ai", tags=["AI Roadmap"])
 
 
 class AIRequest(BaseModel):
-    user_input: str
-    current_skills: list[str] = []
+    goal: str
+    level: str
+    hours: str
+    timeline: str
+    interests: str = ""
+    currentSkills: list[str] = []
 
 
 @router.post("/generate")
 async def generate_ai_roadmap(req: AIRequest):
+
     return run_learning_pipeline(
-        req.user_input,
-        req.current_skills
+        goal=req.goal,
+        level=req.level,
+        hours=req.hours,
+        timeline=req.timeline,
+        interests=req.interests,
+        current_skills=req.currentSkills
     )
 
 
 class ChatRequest(BaseModel):
     message: str
 
-    
+
 @router.post("/chat")
 async def chat_with_ai(req: ChatRequest):
 
