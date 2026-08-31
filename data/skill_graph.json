@@ -1,0 +1,35 @@
+{
+  "AI Engineer": [
+    "Python",
+    "Data Structures",
+    "Machine Learning",
+    "Deep Learning",
+    "NLP",
+    "LLM Engineering",
+    "MLOps"
+  ],
+
+  "Data Scientist": [
+    "Python",
+    "Statistics",
+    "Machine Learning",
+    "Data Visualization"
+  ],
+
+  "Frontend Developer": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "React",
+    "Next.js",
+    "TypeScript"
+  ],
+
+  "Backend Developer": [
+    "Python",
+    "Databases",
+    "FastAPI",
+    "APIs",
+    "System Design"
+  ]
+}

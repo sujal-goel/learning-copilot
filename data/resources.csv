@@ -1,0 +1,11 @@
+title,skill,difficulty,platform,url,description
+Deep Learning Specialization,Deep Learning,Intermediate,Coursera,https://coursera.org,Learn neural networks and deep learning fundamentals
+FastAI Practical Deep Learning,Deep Learning,Intermediate,FastAI,https://fast.ai,Hands-on deep learning course
+CS231n,Deep Learning,Advanced,Stanford,https://cs231n.stanford.edu,Computer vision and deep learning
+HuggingFace NLP Course,NLP,Intermediate,HuggingFace,https://huggingface.co/learn,NLP with transformers
+CS224N,NLP,Advanced,Stanford,https://web.stanford.edu/class/cs224n,Natural language processing course
+LangChain Crash Course,LLM Engineering,Intermediate,YouTube,https://youtube.com,Build LLM applications
+Building RAG Applications,LLM Engineering,Intermediate,DeepLearningAI,https://deeplearning.ai,RAG systems and retrieval
+MLOps Zoomcamp,MLOps,Intermediate,DataTalksClub,https://datatalks.club,MLOps lifecycle and deployment
+Docker for Beginners,MLOps,Beginner,Udemy,https://udemy.com,Containerization basics
+NeetCode DSA Roadmap,Data Structures,Intermediate,YouTube,https://youtube.com,Master data structures and algorithms
