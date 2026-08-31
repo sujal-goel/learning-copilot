@@ -1,6 +1,17 @@
+__pycache__/
+*.pyc
+
+.venv/
+env/
+
+node_modules/
+dist/
+build/
+
+.env
 */.env
-.agents/*
-*/.venv
+
 */__pycache__/*
 */*/__pycache__/*
 
+.agents/*

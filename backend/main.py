@@ -1,4 +1,12 @@
+import sys
 import os
+
+sys.path.append(
+    os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..")
+    )
+)
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -15,6 +23,10 @@ from routes import (
     progress_router,
     roadmap_router,
 )
+from routes.ai_roadmap import router as ai_router
+from routes.course_routes import router as course_router
+from routes.resource_routes import router as resource_router
+from routes.skill_gap_routes import router as skill_gap_router
 from utils.logging import logger
 
 @asynccontextmanager
@@ -73,6 +85,10 @@ app.include_router(progress_router)
 app.include_router(feedback_router)
 app.include_router(chat_router)
 
+app.include_router(ai_router)
+app.include_router(course_router)
+app.include_router(resource_router)
+app.include_router(skill_gap_router)
 
 @app.get("/health", tags=["Health"])
 async def health_check():
