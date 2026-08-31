@@ -84,11 +84,11 @@ app.include_router(roadmap_router)
 app.include_router(progress_router)
 app.include_router(feedback_router)
 app.include_router(chat_router)
+
 app.include_router(ai_router)
 app.include_router(course_router)
 app.include_router(resource_router)
 app.include_router(skill_gap_router)
-
 
 @app.get("/health", tags=["Health"])
 async def health_check():
